@@ -24,7 +24,6 @@ def getLoginDetails():
             cur.execute("SELECT count(productId) FROM kart WHERE userId = ?", (userId, ))
             noOfItems = cur.fetchone()[0]
             
-    conn.close()
     return (loggedIn, firstName, noOfItems)
 
 @app.route("/")
@@ -46,7 +45,7 @@ def admin():
         cur = conn.cursor()
         cur.execute("SELECT categoryId, name FROM categories")
         categories = cur.fetchall()
-        conn.close()
+         
     return render_template('add.html', categories=categories)
 
 
@@ -72,21 +71,40 @@ def addItem():
             cur.execute('''INSERT INTO products (name, price, description, image, stock, categoryId) VALUES (?, ?, ?, ?, ?, ?)''', (name, price, description, imagename, stock, categoryId))
             conn.commit()
             msg="added successfully"
+            return redirect(url_for('root'))
         except:
             msg="error occured"
             conn.rollback()
-            conn.close()
             print(msg)
             return redirect(url_for('root'))
 
 
+@app.route("/addCategory", methods=["GET", "POST"])
+def addCategory():
+    if request.method == "POST":
+        category = request.form['categoryName']
+        
+    with sqlite3.connect('database.db') as conn:
+        try:
+            cur = conn.cursor()
+            cur.execute('INSERT INTO categories (name) VALUES (?)', (category , ))
+            conn.commit()
+            msg="added successfully"
+            return redirect(url_for('root'))
+        except:
+            msg="error occured"
+            conn.rollback()
+            print(msg)
+            return redirect(url_for('root'))
+        
+        
 @app.route("/remove")
 def remove():
     with sqlite3.connect('database.db') as conn:
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products')
         data = cur.fetchall()
-        conn.close()
+         
     return render_template('remove.html', data=data)
 
 
@@ -102,7 +120,7 @@ def removeItem():
         except:
             conn.rollback()
             msg = "Error occured"
-            conn.close()
+             
             print(msg)
     return redirect(url_for('root'))
 
@@ -116,7 +134,6 @@ def displayCategory():
             cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = ?", (categoryId, ))
             data = cur.fetchall()
         
-        conn.close()
         categoryName = data[0][4]
         data = parse(data)
         
@@ -141,7 +158,7 @@ def editProfile():
         cur = conn.cursor()
         cur.execute("SELECT userId, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone FROM users WHERE email = ?", (session['email'], ))
         profileData = cur.fetchone()
-    conn.close()
+     
     
     return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
@@ -173,7 +190,7 @@ def changePassword():
                 return render_template("changePassword.html", msg=msg)
             else:
                 msg = "Wrong password"
-        conn.close()
+         
 
         return render_template("changePassword.html", msg=msg)
 
@@ -240,7 +257,7 @@ def productDescription():
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = ?', (productId, ))
         productData = cur.fetchone()
-    conn.close()
+     
 
     return render_template("productDescription.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
 
@@ -265,7 +282,7 @@ def addToCart():
             except:
                 conn.rollback()
                 msg = "Error occured"
-        conn.close()
+         
         return redirect(url_for('root'))
 
 
@@ -307,7 +324,7 @@ def removeFromCart():
         except:
             conn.rollback()
             msg = "error occured"
-    conn.close()
+     
 
     return redirect(url_for('root'))
 
