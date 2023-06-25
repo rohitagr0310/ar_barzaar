@@ -1,5 +1,7 @@
 import scrapy
 import pandas as pd
+import sqlite3
+
 
 i = 0
 
@@ -28,5 +30,7 @@ class BooksSpider(scrapy.Spider):
         book_info['price'] = price
         book_info['description'] = description
         return book_info
+    
+        
     
   

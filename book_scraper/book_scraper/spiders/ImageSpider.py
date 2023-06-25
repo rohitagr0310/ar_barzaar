@@ -1,6 +1,7 @@
 import os
 import scrapy
 from urllib.parse import urljoin
+import sqlite3
 
 class ImageSpider(scrapy.Spider):
     name = "ImageSpider"
@@ -33,3 +34,10 @@ class ImageSpider(scrapy.Spider):
         with open(file_path, 'wb') as f:
             f.write(response.body)
         self.log(f'Saved image: {file_path}')
+        
+        # Save data to SQLite database
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO images (image_url, file_name) VALUES (?, ?)", (response.meta['image_url'], image_name))
+        conn.commit()
+        conn.close()
