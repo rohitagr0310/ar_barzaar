@@ -29,14 +29,30 @@ def getLoginDetails():
 @app.route("/")
 def root():
     loggedIn, firstName, noOfItems = getLoginDetails()
+    page = int(request.args.get('page', 1))
+    per_page = 30  # Number of products per page
+    offset = (page - 1) * per_page  # Calculate the offset for the SQL query
+    page = int(request.args.get('page', 1))  # Get the page number from the request parameters
+ 
     with sqlite3.connect('database.db') as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        cur.execute("SELECT * FROM products LIMIT ? OFFSET ?", (per_page, offset))
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-        itemData = parse(itemData) 
-    return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData)
+        cur.execute("SELECT COUNT(*) FROM products")
+        total_count = cur.fetchone()[0]
+        itemData = parse(itemData)
+    return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData,products=itemData, page=page, per_page=per_page, total_count=total_count)
+
+# Route for handling next page
+@app.route('/next_page')
+def next_page():
+    page = int(request.args.get('page', 1))  # Get the current page number from the request parameters
+    next_page = page + 1  # Calculate the next page number
+    
+    return redirect(f'/?page={next_page}')  # Redirect to the /products route with the next page number
+
 
 
 @app.route("/add")
