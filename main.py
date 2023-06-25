@@ -30,7 +30,7 @@ def getLoginDetails():
 def root():
     loggedIn, firstName, noOfItems = getLoginDetails()
     page = int(request.args.get('page', 1))
-    per_page = 30  # Number of products per page
+    per_page = 50  # Number of products per page
     offset = (page - 1) * per_page  # Calculate the offset for the SQL query
     page = int(request.args.get('page', 1))  # Get the page number from the request parameters
  
@@ -177,6 +177,21 @@ def editProfile():
      
     
     return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+
+@app.route('/account/profile/view')
+def view_profile():
+    # Retrieve profile data from your backend or template engine
+    if 'email' not in session:
+        return redirect(url_for('root'))
+    
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    
+    with sqlite3.connect('database.db') as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT userId, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone FROM users WHERE email = ?", (session['email'], ))
+        profileData = cur.fetchone()
+    
+    return render_template('viewProfile.html', profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
 
 @app.route("/account/profile/changePassword", methods=["GET", "POST"])

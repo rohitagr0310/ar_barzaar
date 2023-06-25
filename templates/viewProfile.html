@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>View Profile</title>
+    <link rel="stylesheet" href={{ url_for('static',
+    filename='css/viewProfile.css') }}/>
+  </head>
+  <body>
+    <div class="container">
+      <h1>View Profile</h1>
+      <div class="profile-info">
+        <div class="field">
+          <label>First Name:</label>
+          <span>{{ profileData[2] }}</span>
+        </div>
+        <div class="field">
+          <label>Last Name:</label>
+          <span>{{ profileData[3] }}</span>
+        </div>
+        <div class="field">
+          <label>Email:</label>
+          <span>{{ profileData[1] }}</span>
+        </div>
+        <div class="field">
+          <label>Address:</label>
+          <span>{{ profileData[4] }} {{ profileData[5] }}</span>
+        </div>
+        <div class="field">
+          <label>City:</label>
+          <span>{{ profileData[7] }}</span>
+        </div>
+        <div class="field">
+          <label>State:</label>
+          <span>{{ profileData[8] }}</span>
+        </div>
+        <div class="field">
+          <label>Country:</label>
+          <span>{{ profileData[9] }}</span>
+        </div>
+        <div class="field">
+          <label>Phone Number:</label>
+          <span>{{ profileData[10] }}</span>
+        </div>
+      </div>
+      <a href="/account/profile/edit">Edit Profile</a>
+      <a href="/account/profile/changePassword">Change Password</a>
+    </div>
+  </body>
+</html>
