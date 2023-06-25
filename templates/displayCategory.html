@@ -1,72 +1,81 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-<title>Category: {{categoryName}}</title>
-<link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }} />
-<link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
-</head>
-<body>
-<div id="title">
-	<a href="/">
-		<img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
-	</a>
-	<form>
-		<input id="searchBox" type="text" name="searchQuery">
-		<input id="searchButton" type="submit" value="Search">
-	</form>
+  <head>
+    <title>Category: {{categoryName}}</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }}
+    /> <link rel="stylesheet" href={{ url_for('static',
+    filename='css/topStyle.css') }} />
+  </head>
+  <body>
+    <div id="title">
+      <a href="/">
+        <img id="logo" src= {{ url_for('static', filename='images/logo.png') }}
+        />
+      </a>
+      <form>
+        <input id="searchBox" type="text" name="searchQuery" />
+        <input id="searchButton" type="submit" value="Search" />
+      </form>
 
-	{% if not loggedIn %}
-	<div id="signInButton">
-		<a class="link" href="/loginForm">Sign In</a>
-	</div>
-	{% else %}
-	<div class="dropdown">
-		<button class="dropbtn">Hello, <br>{{firstName}}</button>
-		<div class="dropdown-content">
-			<a href="/account/orders">Your orders</a>
-			<a href="/account/profile">Your profile</a>
-			<hr>
-			<a href="/logout">Sign Out</a>
-		</div>
-	</div>
-	{% endif %}
-	<div id="kart">
-		<a class="link" href="/cart">
-			<img src={{url_for('static', filename='images/shoppingCart.png')}} id="cartIcon" />
-			CART {{noOfItems}}
-		</a>
-	</div>
-</div>
+      {% if not loggedIn %}
+      <div id="signInButton">
+        <a class="link" href="/loginForm">Sign In</a>
+      </div>
+      {% else %}
+      <div class="dropdown">
+        <button class="dropbtn">Hello, <br />{{firstName}}</button>
+        <div class="dropdown-content">
+          <a href="/account/orders">Your orders</a>
+          <a href="/account/profile">Your profile</a>
+          <hr />
+          <a href="/logout">Sign Out</a>
+        </div>
+      </div>
+      {% endif %}
+      <div id="kart">
+        <a class="link" href="/cart">
+          <img src={{url_for('static', filename='images/shoppingCart.png')}}
+          id="cartIcon" /> CART {{noOfItems}}
+        </a>
+      </div>
+    </div>
 
-<div>
-	<h2>Showing all products of Category {{categoryName}}:</h2>
-	{% for itemData in data %}
-	<table>
-		<tr id="productName">
-			{% for row in itemData %}
-			<td>
-				{{row[1]}}
-			</td>
-			{% endfor %}
-		</tr>
-		<tr id="productImage">
-			{% for row in itemData %}
-			<td>
-				<a href="/productDescription?productId={{row[0]}}">
-					<img src={{ url_for('static', filename='uploads/' + row[3]) }} id="itemImage" />
-				</a>
-			</td>
-			{% endfor %}
-		</tr>
-		<tr id="productPrice">
-			{% for row in itemData %}
-			<td>
-				${{row[2]}}
-			</td>
-			{% endfor %}
-		</tr>
-	</table>
-	{% endfor %}
-</div>
-</body>
+    <div>
+      <div class="displayCategory">
+        <h2>Shop by Category:</h2>
+        <form
+          action="/displayCategory"
+          method="GET"
+          style="
+            width: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <select name="categoryId">
+            {% for row in categoryData %}
+            <option value="{{ row[0] }}">{{ row[1] }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Go</button>
+        </form>
+      </div>
+      <h2>Showing all products of Category {{categoryName}}:</h2>
+      <div class="grid-container">
+        {% for item in data %}
+        <div class="item">
+          <div
+            class="card"
+            style="background-image: url(static/uploads/{{item[3]}})"
+          ></div>
+          <div style="width: 120px">
+            <p class="cut-text">{{item[1]}}</p>
+            <p>Price: {{item[2]}}$</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
 </html>

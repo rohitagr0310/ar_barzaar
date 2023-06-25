@@ -32,7 +32,6 @@ def root():
     page = int(request.args.get('page', 1))
     per_page = 50  # Number of products per page
     offset = (page - 1) * per_page  # Calculate the offset for the SQL query
-    page = int(request.args.get('page', 1))  # Get the page number from the request parameters
  
     with sqlite3.connect('database.db') as conn:
         cur = conn.cursor()
@@ -42,7 +41,8 @@ def root():
         categoryData = cur.fetchall()
         cur.execute("SELECT COUNT(*) FROM products")
         total_count = cur.fetchone()[0]
-        itemData = parse(itemData)
+        # itemData = parse(itemData)
+        itemData = list(itemData)
     return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData,products=itemData, page=page, per_page=per_page, total_count=total_count)
 
 # Route for handling next page
@@ -149,11 +149,13 @@ def displayCategory():
             cur = conn.cursor()
             cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = ?", (categoryId, ))
             data = cur.fetchall()
+            cur.execute('SELECT categoryId, name FROM categories')
+            categoryData = cur.fetchall()
         
         categoryName = data[0][4]
-        data = parse(data)
+        data = list(data)
         
-        return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryName=categoryName)
+        return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryName=categoryName, categoryData=categoryData)
 
 
 @app.route("/account/profile")
@@ -418,16 +420,9 @@ def allowed_file(filename):
 
 
 def parse(data):
-    ans = []
-    i = 0
-    while i < len(data):
-        curr = []
-        for j in range(7):
-            if i >= len(data):
-                break
-            curr.append(data[i])
-            i += 1
-        ans.append(curr)
+    ans = []   
+    for j in range(len(data)):
+        ans.append(data[j])
     return ans
 
 

@@ -11,27 +11,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #ffffff;
+  background-color: #000;
   padding: 10px;
-  flex-wrap: wrap; /* Add this line */
 }
 
 form {
   display: flex;
   margin-left: 20px;
-  flex: 1; /* Add this line */
 }
-
 
 #logo {
   height: 40px;
 }
 
-
 #searchBox {
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  width: 600px;
 }
 
 #searchButton {
@@ -44,23 +41,28 @@ form {
   cursor: pointer;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #signInButton {
   margin-left: 20px;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-  margin-left: 20px;
-}
-
 .dropbtn {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #4caf50;
-  color: #ffffff;
+  background-color: black;
+  color: white;
+  padding: 16px;
+  font-size: 15px;
   border: none;
   cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  float: left;
 }
 
 .dropdown-content {
@@ -69,11 +71,11 @@ form {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
 }
 
 .dropdown-content a {
-  color: #000000;
+  font-size: 14px;
+  color: black;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -85,6 +87,10 @@ form {
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: gray;
 }
 
 #kart {
@@ -103,14 +109,9 @@ form {
 }
 
 .display {
-  display: flex;
   margin: 20px;
   background-color: #ffffff;
   padding: 20px;
-}
-
-.displayCategory {
-  margin-right: 20px;
 }
 
 h2 {
@@ -125,12 +126,71 @@ form select {
 
 form button {
   padding: 5px 10px;
-  margin-top: 5px;
   border-radius: 5px;
   background-color: #4caf50;
   color: #ffffff;
   border: none;
   cursor: pointer;
+  height: 100%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 50px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 360px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .grid-container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media screen and (min-width: 1760px) {
+  .grid-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.card {
+  height: 180px;
+  width: 120px;
+  border-radius: 6px;
+  border: 1px solid black;
+  padding: 20px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.cut-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 120px;
+  height: 1.2em;
+  white-space: nowrap;
+  font-weight: 700;
 }
 
 table {

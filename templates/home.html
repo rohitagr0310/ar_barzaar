@@ -16,33 +16,43 @@
         <input id="searchBox" type="text" name="searchQuery" />
         <input id="searchButton" type="submit" value="Search" />
       </form>
-
-      {% if not loggedIn %}
-      <div id="signInButton">
-        <a class="link" href="/loginForm">Sign In</a>
-      </div>
-      {% else %}
-      <div class="dropdown">
-        <button class="dropbtn">Hello, <br />{{firstName}}</button>
-        <div class="dropdown-content">
-          <a href="/account/orders">Your orders</a>
-          <a href="/account/profile">Your profile</a>
-          <hr />
-          <a href="/logout">Sign Out</a>
+      <div class="actions">
+        {% if not loggedIn %}
+        <div id="signInButton">
+          <a class="link" href="/loginForm">Sign In</a>
         </div>
-      </div>
-      {% endif %}
-      <div id="kart">
-        <a class="link" href="/cart">
-          <img src={{url_for('static', filename='images/shoppingCart.png')}}
-          id="cartIcon" /> CART {{noOfItems}}
-        </a>
+        {% else %}
+        <div class="dropdown">
+          <button class="dropbtn">Hello, <br />{{firstName}}</button>
+          <div class="dropdown-content">
+            <a href="/account/orders">Your orders</a>
+            <a href="/account/profile">Your profile</a>
+            <hr />
+            <a href="/logout">Sign Out</a>
+          </div>
+        </div>
+        {% endif %}
+        <div id="kart">
+          <a class="link" href="/cart">
+            <img src={{url_for('static', filename='images/shoppingCart.png')}}
+            id="cartIcon" /> CART {{noOfItems}}
+          </a>
+        </div>
       </div>
     </div>
     <div class="display">
       <div class="displayCategory">
         <h2>Shop by Category:</h2>
-        <form action="/displayCategory" method="GET">
+        <form
+          action="/displayCategory"
+          method="GET"
+          style="
+            width: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
           <select name="categoryId">
             {% for row in categoryData %}
             <option value="{{ row[0] }}">{{ row[1] }}</option>
@@ -53,30 +63,20 @@
       </div>
       <div>
         <h2>Items</h2>
-        {% for data in itemData %}
-        <table>
-          <tr id="productName">
-            {% for row in data %}
-            <td>{{row[1]}}</td>
-            {% endfor %}
-          </tr>
-          <tr id="productImage">
-            {% for row in data %}
-            <td>
-              <a href="/productDescription?productId={{row[0]}}">
-                <img src={{ url_for('static', filename='uploads/' + row[4]) }}
-                id="itemImage" />
-              </a>
-            </td>
-            {% endfor %}
-          </tr>
-          <tr id="productPrice">
-            {% for row in data %}
-            <td>${{row[2]}}</td>
-            {% endfor %}
-          </tr>
-        </table>
-        {% endfor %}
+        <div class="grid-container">
+          {% for data in itemData %}
+          <div class="item">
+            <div
+              class="card"
+              style="background-image: url(static/uploads/{{data[4]}})"
+            ></div>
+            <div style="width: 120px">
+              <p class="cut-text">{{data[1]}}</p>
+              <p>Price: {{data[2]}}$</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
     <div class="pagination">
