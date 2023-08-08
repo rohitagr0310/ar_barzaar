@@ -32,18 +32,33 @@ def root():
     page = int(request.args.get('page', 1))
     per_page = 50  # Number of products per page
     offset = (page - 1) * per_page  # Calculate the offset for the SQL query
- 
-    with sqlite3.connect('database.db') as conn:
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM products LIMIT ? OFFSET ?", (per_page, offset))
-        itemData = cur.fetchall()
-        cur.execute('SELECT categoryId, name FROM categories')
-        categoryData = cur.fetchall()
-        cur.execute("SELECT COUNT(*) FROM products")
-        total_count = cur.fetchone()[0]
-        # itemData = parse(itemData)
-        itemData = list(itemData)
-    return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData,products=itemData, page=page, per_page=per_page, total_count=total_count)
+
+    searchQuery = request.args.get('searchQuery')
+    print(searchQuery)
+    if searchQuery != None:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM products WHERE name LIKE ? LIMIT ? OFFSET ?", ("%" + searchQuery + "%", per_page, offset))
+            itemData = cur.fetchall()
+            cur.execute('SELECT categoryId, name FROM categories')
+            categoryData = cur.fetchall()
+            cur.execute("SELECT COUNT(*) FROM products")
+            total_count = cur.fetchone()[0]
+            # itemData = parse(itemData)
+            itemData = list(itemData)
+        return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData,products=itemData, page=page, per_page=per_page, total_count=total_count)
+    else:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM products LIMIT ? OFFSET ?", (per_page, offset))
+            itemData = cur.fetchall()
+            cur.execute('SELECT categoryId, name FROM categories')
+            categoryData = cur.fetchall()
+            cur.execute("SELECT COUNT(*) FROM products")
+            total_count = cur.fetchone()[0]
+            # itemData = parse(itemData)
+            itemData = list(itemData)
+        return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData,products=itemData, page=page, per_page=per_page, total_count=total_count)
 
 # Route for handling next page
 @app.route('/next_page')
